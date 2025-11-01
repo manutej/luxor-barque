@@ -44,11 +44,18 @@ demo-output/
 *.pdf
 .barque/.temp/
 .barque/.cache/
+.barque/logs/
 
-# Secrets
+# Secrets and Configuration
 .env
+.env.*
+!.env.example
 *.key
 credentials.json
+.barque/email.yaml
+.barque/config.local.yaml
+**/secrets.yaml
+**/*.secret.*
 
 # Testing
 .pytest_cache/

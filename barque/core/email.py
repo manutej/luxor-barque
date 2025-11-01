@@ -3,20 +3,30 @@
 import subprocess
 import shutil
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from dataclasses import dataclass
-from enum import Enum
+
+# Import configuration system
+from .email_config import (
+    EmailProvider,
+    EmailConfig as EmailConfigClass,
+    EmailConfigLoader,
+    EmailConfigData
+)
+
+# Re-export for backward compatibility
+EmailProvider = EmailProvider
 
 
-class EmailProvider(Enum):
-    """Email delivery provider"""
-    RESEND = "resend"
-    SMTP = "smtp"
-
-
+# Legacy EmailConfig wrapper for backward compatibility
 @dataclass
 class EmailConfig:
-    """Email configuration"""
+    """
+    Email configuration (backward compatible wrapper)
+
+    This class maintains backward compatibility with the original API
+    while delegating to the new configuration system.
+    """
     provider: EmailProvider = EmailProvider.RESEND
     from_email: Optional[str] = None
     signature: Optional[str] = None
@@ -29,6 +39,32 @@ class EmailConfig:
 
     # Resend specific
     resend_api_key: Optional[str] = None
+
+    @classmethod
+    def from_file(cls, config_path: Optional[Path] = None) -> 'EmailConfig':
+        """
+        Load configuration from file with environment variable overrides
+
+        Args:
+            config_path: Optional path to config file
+
+        Returns:
+            EmailConfig instance
+        """
+        # Use new config loader
+        config_data = EmailConfigLoader.load(config_path)
+
+        # Convert to legacy format
+        return cls(
+            provider=config_data.provider,
+            from_email=config_data.defaults.from_email,
+            signature=config_data.defaults.signature,
+            smtp_host=config_data.smtp.host,
+            smtp_port=config_data.smtp.port,
+            smtp_username=config_data.smtp.username,
+            smtp_password=config_data.smtp.password,
+            resend_api_key=config_data.resend.api_key
+        )
 
 
 @dataclass
@@ -59,8 +95,22 @@ class EmailResult:
 class EmailSender:
     """Email delivery orchestrator using Charm Pop"""
 
-    def __init__(self, config: Optional[EmailConfig] = None):
-        self.config = config or EmailConfig()
+    def __init__(self, config: Optional[Union[EmailConfig, Path]] = None):
+        """
+        Initialize EmailSender
+
+        Args:
+            config: EmailConfig instance, path to config file, or None
+                   If None, will attempt to load from standard locations
+        """
+        # Handle different config types
+        if isinstance(config, Path):
+            self.config = EmailConfig.from_file(config)
+        elif config is None:
+            self.config = EmailConfig.from_file()
+        else:
+            self.config = config
+
         self._verify_pop_installed()
 
     def _verify_pop_installed(self) -> None:
