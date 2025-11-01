@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=60.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "barque"
+version = "2.0.0"
+description = "Multi-modal document orchestration with dual-theme PDF generation"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "LUXOR Systems", email = "dev@luxor.systems"}
+]
+keywords = ["pdf", "markdown", "documentation", "dual-theme", "latex", "pandoc"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Documentation",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+
+dependencies = [
+    "click>=8.0",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "markdown>=3.4",
+    "pygments>=2.14",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "ruff>=0.1",
+    "mypy>=1.0",
+]
+all = [
+    "weasyprint>=58.0",
+    "pillow>=9.0",
+]
+
+[project.scripts]
+barque = "barque.cli.commands:main"
+
+[project.urls]
+Homepage = "https://github.com/luxor/barque"
+Documentation = "https://barque.readthedocs.io"
+Repository = "https://github.com/luxor/barque"
+Changelog = "https://github.com/luxor/barque/blob/main/CHANGELOG.md"
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+select = ["E", "F", "I", "N", "W", "B", "C4"]
+ignore = ["E501", "B008"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=barque --cov-report=html --cov-report=term"

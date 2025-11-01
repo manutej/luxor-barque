@@ -1,0 +1,34 @@
+project:
+  name: Untitled
+  description: ''
+  author: ''
+output:
+  directory: output
+  organize_by_theme: true
+  create_index: true
+styling:
+  font_family: Inter, -apple-system, BlinkMacSystemFont, sans-serif
+  base_font_size: 14px
+  line_height: 1.6
+  max_width: 900px
+light_theme:
+  background: '#ffffff'
+  text: '#1a1a1a'
+  accent: '#2563eb'
+  code_bg: '#f0f0f0'
+  border: '#e0e0e0'
+dark_theme:
+  background: '#1a1a1a'
+  text: '#e8e8e8'
+  accent: '#60a5fa'
+  code_bg: '#2d2d2d'
+  border: '#3d3d3d'
+math:
+  enabled: true
+  engine: mathjax
+  inline_delimiter: $
+  display_delimiter: $$
+processing:
+  workers: 4
+  cache_enabled: true
+  incremental_build: false
