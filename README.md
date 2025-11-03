@@ -27,6 +27,20 @@ Multi-modal document orchestration engine with dual-theme PDF generation, mathem
 
 ## Quick Start
 
+### Email Setup (5 Minutes)
+
+To use email features, set up your Resend API key:
+
+```bash
+# Get free API key from: https://resend.com
+export RESEND_API_KEY="re_your_api_key_here"
+
+# Test email delivery
+barque send README.md --to your-email@example.com
+```
+
+📖 **[Complete Email Setup Guide →](EMAIL-SETUP.md)**
+
 ### Installation
 
 ```bash
@@ -171,40 +185,67 @@ barque config --reset     # Reset to defaults
 
 Generate PDF and send via email (convenience command).
 
+**Prerequisites**: Set `RESEND_API_KEY` environment variable ([setup guide](EMAIL-SETUP.md))
+
 ```bash
-barque send report.md --to user@example.com                       # Generate and send
+# Quick start (requires RESEND_API_KEY)
+export RESEND_API_KEY="re_your_key"
+barque send report.md --to user@example.com
+
+# With options
 barque send doc.md --to user@example.com --theme light            # Light theme only
 barque send report.md --to team@company.com --subject "Q4 Report" # Custom subject
+barque send file.md --to user@example.com --from noreply@myapp.com
 ```
 
 **Options:**
 - `--to` - Recipient email (required, can specify multiple times)
-- `--subject` - Email subject (default: auto-generated)
-- `--from` - Sender email address
-- `--theme` - PDF theme: `light`, `dark`, or `both`
-- `--provider` - Email provider: `resend` or `smtp`
+- `--subject` - Email subject (default: auto-generated from filename)
+- `--from` - Sender email address (default: from config or env)
+- `--theme` - PDF theme: `light`, `dark`, or `both` (default: `both`)
+- `--provider` - Email provider: `resend` or `smtp` (default: `resend`)
 - `--body` - Custom email body text
+- `--email-config` - Path to email config file (optional)
 
 ### `barque email <files...>`
 
 Send existing files via email.
 
+**Prerequisites**: Set `RESEND_API_KEY` environment variable ([setup guide](EMAIL-SETUP.md))
+
 ```bash
+# Quick start (requires RESEND_API_KEY)
+export RESEND_API_KEY="re_your_key"
 barque email report.pdf --to user@example.com --subject "Report"
-barque email doc1.pdf doc2.pdf --to team@company.com              # Multiple files
-barque email file.pdf --to user@example.com --cc manager@company.com  # With CC
+
+# Multiple files
+barque email doc1.pdf doc2.pdf --to team@company.com --subject "Documents"
+
+# With CC/BCC
+barque email file.pdf \
+  --to user@example.com \
+  --cc manager@company.com \
+  --bcc archive@company.com \
+  --subject "Important File"
 ```
 
 **Options:**
 - `--to` - Recipient email (required, can specify multiple times)
 - `--subject` - Email subject (required)
-- `--from` - Sender email address
+- `--from` - Sender email address (default: from config or env)
 - `--cc` - CC recipient (can specify multiple times)
 - `--bcc` - BCC recipient (can specify multiple times)
 - `--body` - Custom email body text
-- `--provider` - Email provider: `resend` or `smtp`
+- `--provider` - Email provider: `resend` or `smtp` (default: `resend`)
+- `--email-config` - Path to email config file (optional)
 
-**See [EMAIL-GUIDE.md](EMAIL-GUIDE.md) for complete email documentation.**
+---
+
+## Email Documentation
+
+📖 **[EMAIL-SETUP.md](EMAIL-SETUP.md)** - 5-minute setup guide (start here!)
+📖 **[EMAIL-GUIDE.md](EMAIL-GUIDE.md)** - Complete email feature documentation
+📖 **[CONFIGURATION-GUIDE.md](CONFIGURATION-GUIDE.md)** - Advanced configuration
 
 ---
 
