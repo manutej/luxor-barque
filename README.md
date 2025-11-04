@@ -27,19 +27,25 @@ Multi-modal document orchestration engine with dual-theme PDF generation, mathem
 
 ## Quick Start
 
-### Email Setup (5 Minutes)
+### Email Setup (2 Minutes)
 
-To use email features, set up your Resend API key:
+To use email features, configure your Resend API key:
 
 ```bash
-# Get free API key from: https://resend.com
-export RESEND_API_KEY="re_your_api_key_here"
+# 1. Initialize user config
+barque user-config init
 
-# Test email delivery
+# 2. Set your Resend API key (get free key from https://resend.com)
+barque user-config set email.resend_api_key re_your_api_key_here
+
+# 3. Set sender email
+barque user-config set email.from your-email@example.com
+
+# 4. Test email delivery
 barque send README.md --to your-email@example.com
 ```
 
-📖 **[Complete Email Setup Guide →](EMAIL-SETUP.md)**
+📖 **[Complete Configuration Guide →](CONFIG.md)**
 
 ### Installation
 
