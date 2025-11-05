@@ -38,28 +38,29 @@ barque user-config init
 # 2. Set your Resend API key (get free key from https://resend.com)
 barque user-config set email.resend_api_key re_your_api_key_here
 
-# 3. Set sender email
-barque user-config set email.from your-email@example.com
+# 3. Set default sender email
+barque user-config set email.from noreply@your-domain.com
 
 # 4. Test email delivery
 barque send README.md --to your-email@example.com
 ```
 
-📖 **[Complete Configuration Guide →](CONFIG.md)**
+**Note**: Free Resend accounts can only send to your verified email (the one you signed up with). To send to any recipient, verify a domain at [resend.com/domains](https://resend.com/domains).
+
+📖 **[EMAIL-SETUP.md](EMAIL-SETUP.md)** - Complete setup guide
+📖 **[CLI-CHEATSHEET.md](CLI-CHEATSHEET.md)** - Quick command reference
 
 ### Installation
 
-```bash
-pip install barque
-```
-
-Or install from source:
+**From Source** (Currently):
 
 ```bash
-git clone https://github.com/luxor/barque.git
-cd barque
+git clone https://github.com/manutej/luxor-barque.git
+cd luxor-barque
 pip install -e .
 ```
+
+**Note**: BARQUE is not yet published to PyPI. Coming soon!
 
 ### Basic Usage
 
@@ -191,17 +192,20 @@ barque config --reset     # Reset to defaults
 
 Generate PDF and send via email (convenience command).
 
-**Prerequisites**: Set `RESEND_API_KEY` environment variable ([setup guide](EMAIL-SETUP.md))
+**Prerequisites**: Configure email settings with `barque user-config` ([setup guide](EMAIL-SETUP.md))
 
 ```bash
-# Quick start (requires RESEND_API_KEY)
-export RESEND_API_KEY="re_your_key"
+# Quick setup
+barque user-config set email.resend_api_key re_your_key
+barque user-config set email.from noreply@your-domain.com
+
+# Generate PDF and send
 barque send report.md --to user@example.com
 
 # With options
 barque send doc.md --to user@example.com --theme light            # Light theme only
 barque send report.md --to team@company.com --subject "Q4 Report" # Custom subject
-barque send file.md --to user@example.com --from noreply@myapp.com
+barque send file.md --to user@example.com --from custom@email.com # Override sender
 ```
 
 **Options:**
@@ -217,11 +221,13 @@ barque send file.md --to user@example.com --from noreply@myapp.com
 
 Send existing files via email.
 
-**Prerequisites**: Set `RESEND_API_KEY` environment variable ([setup guide](EMAIL-SETUP.md))
+**Prerequisites**: Configure email settings with `barque user-config` ([setup guide](EMAIL-SETUP.md))
 
 ```bash
-# Quick start (requires RESEND_API_KEY)
-export RESEND_API_KEY="re_your_key"
+# Quick setup
+barque user-config set email.resend_api_key re_your_key
+
+# Send single file
 barque email report.pdf --to user@example.com --subject "Report"
 
 # Multiple files
@@ -233,6 +239,42 @@ barque email file.pdf \
   --cc manager@company.com \
   --bcc archive@company.com \
   --subject "Important File"
+```
+
+### `barque user-config`
+
+Manage user-level configuration (API keys, email settings).
+
+```bash
+# Initialize user config
+barque user-config init
+
+# Set Resend API key
+barque user-config set email.resend_api_key re_your_key
+
+# Set default sender email
+barque user-config set email.from noreply@your-domain.com
+
+# View all settings
+barque user-config show
+
+# Get specific value
+barque user-config get email.from
+
+# Show config file location
+barque user-config path
+```
+
+**Available Settings:**
+- `email.resend_api_key` - Resend API key
+- `email.from` - Default sender email
+- `email.signature` - Email signature
+- `smtp.host` - SMTP server (alternative to Resend)
+- `smtp.port` - SMTP port
+- `smtp.username` - SMTP username
+- `smtp.password` - SMTP password
+- `preferences.theme` - Default theme (light/dark/both)
+- `preferences.output` - Default output directory
 ```
 
 **Options:**
