@@ -7,6 +7,7 @@ import sys
 from ..core.generator import PDFGenerator
 from ..core.config import BarqueConfig
 from ..core.email import EmailSender, EmailConfig, EmailProvider, EmailMessage
+from ..core.user_config import UserConfig
 
 
 @click.group()
@@ -19,14 +20,24 @@ def main(ctx):
     Multi-modal document orchestration with dual-theme PDF generation and email delivery.
 
     \b
+    Setup (First Time):
+      barque user-config init                      # Create user config file
+      barque user-config set email.resend_api_key re_abc123
+
+    \b
     Examples:
-      barque init                                  # Initialize BARQUE
+      barque init                                  # Initialize BARQUE project
       barque generate document.md                  # Generate PDF (both themes)
       barque generate doc.md --theme light         # Generate light theme only
       barque batch docs/ --workers 8               # Process directory with 8 workers
       barque send doc.md --to user@example.com     # Generate PDF and email it
       barque email file.pdf --to user@example.com  # Send existing file via email
                            --subject "Report"
+
+    \b
+    Configuration:
+      barque user-config show                      # Show user settings
+      barque config --show                         # Show project settings
     """
     ctx.ensure_object(dict)
 
@@ -623,6 +634,177 @@ def send(file, to, subject, from_email, theme, output, provider, body):
     except Exception as e:
         click.secho(f"\n✗ Error: {str(e)}", fg="red", bold=True)
         sys.exit(1)
+
+
+@main.command(name='user-config')
+@click.argument('action', type=click.Choice(['init', 'set', 'get', 'show', 'path']))
+@click.argument('key', required=False)
+@click.argument('value', required=False)
+def user_config_cmd(action, key, value):
+    """
+    Manage user-level configuration (API keys, email settings).
+
+    \b
+    Actions:
+      init              Create default user config file
+      set KEY VALUE     Set a configuration value
+      get KEY           Get a configuration value
+      show              Show all user configuration
+      path              Show config file location
+
+    \b
+    Available Keys:
+      email.resend_api_key      Resend API key for email delivery
+      email.from                Default sender email address
+      email.signature           Default email signature
+      smtp.host                 SMTP server hostname
+      smtp.port                 SMTP server port
+      smtp.username             SMTP username
+      smtp.password             SMTP password
+      preferences.theme         Default theme (light/dark/both)
+      preferences.output        Default output directory
+
+    \b
+    Examples:
+      barque user-config init
+      barque user-config set email.resend_api_key re_abc123
+      barque user-config set email.from user@example.com
+      barque user-config get email.from
+      barque user-config show
+      barque user-config path
+    """
+
+    if action == 'path':
+        config_path = UserConfig.get_config_file()
+        click.echo(f"User config location: {config_path}")
+        if config_path.exists():
+            click.secho("✓ Config file exists", fg="green")
+        else:
+            click.secho("⚠️  Config file does not exist (run 'barque user-config init')", fg="yellow")
+        return
+
+    if action == 'init':
+        config_path = UserConfig.get_config_file()
+
+        if config_path.exists():
+            click.secho(f"⚠️  Config file already exists: {config_path}", fg="yellow")
+            if not click.confirm("Overwrite?"):
+                return
+
+        # Create config directory
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Write default config
+        with open(config_path, 'w') as f:
+            f.write(UserConfig.get_default_config_content())
+
+        click.secho(f"\n✓ Created user config: {config_path}", fg="green", bold=True)
+        click.echo("\nNext steps:")
+        click.echo("  1. Edit the config file to add your API keys:")
+        click.echo(f"     {config_path}")
+        click.echo("  2. Or use 'barque user-config set' to set values")
+        click.echo("\nExample:")
+        click.echo("  barque user-config set email.resend_api_key re_your_key_here")
+        return
+
+    if action == 'show':
+        config = UserConfig.load()
+        config_path = UserConfig.get_config_file()
+
+        click.echo(f"\n📋 User Configuration")
+        click.echo(f"Config file: {config_path}")
+        click.echo("=" * 60)
+
+        if not config_path.exists():
+            click.secho("\n⚠️  No config file found", fg="yellow")
+            click.echo("Run 'barque user-config init' to create one")
+            return
+
+        # Email settings
+        click.echo("\n🔐 Email Settings:")
+        if config.resend_api_key:
+            # Mask API key for security
+            masked = config.resend_api_key[:8] + "..." + config.resend_api_key[-4:]
+            click.echo(f"  Resend API Key: {masked}")
+        else:
+            click.secho("  Resend API Key: <not set>", fg="yellow")
+
+        if config.default_from_email:
+            click.echo(f"  From Email: {config.default_from_email}")
+        else:
+            click.echo("  From Email: <not set>")
+
+        if config.default_email_signature:
+            click.echo(f"  Signature: {config.default_email_signature}")
+
+        # SMTP settings
+        if any([config.smtp_host, config.smtp_username]):
+            click.echo("\n📧 SMTP Settings:")
+            if config.smtp_host:
+                click.echo(f"  Host: {config.smtp_host}:{config.smtp_port or 587}")
+            if config.smtp_username:
+                click.echo(f"  Username: {config.smtp_username}")
+            if config.smtp_password:
+                click.echo(f"  Password: {'*' * 8}")
+
+        # Preferences
+        click.echo("\n⚙️  Preferences:")
+        click.echo(f"  Default Theme: {config.default_theme}")
+        click.echo(f"  Output Directory: {config.default_output_dir}")
+
+        click.echo("=" * 60 + "\n")
+        return
+
+    if action == 'get':
+        if not key:
+            click.secho("✗ Error: KEY required for 'get' action", fg="red")
+            click.echo("Usage: barque user-config get KEY")
+            sys.exit(1)
+
+        config = UserConfig.load()
+
+        try:
+            value = config.get(key)
+            if value:
+                # Mask sensitive values
+                if "api_key" in key or "password" in key:
+                    masked = str(value)[:8] + "..." + str(value)[-4:]
+                    click.echo(f"{key} = {masked}")
+                else:
+                    click.echo(f"{key} = {value}")
+            else:
+                click.secho(f"{key} = <not set>", fg="yellow")
+        except ValueError as e:
+            click.secho(f"✗ {e}", fg="red")
+            sys.exit(1)
+
+        return
+
+    if action == 'set':
+        if not key or not value:
+            click.secho("✗ Error: KEY and VALUE required for 'set' action", fg="red")
+            click.echo("Usage: barque user-config set KEY VALUE")
+            sys.exit(1)
+
+        config = UserConfig.load()
+
+        try:
+            config.set(key, value)
+            config.save()
+
+            # Mask sensitive values in output
+            display_value = value
+            if "api_key" in key or "password" in key:
+                display_value = value[:8] + "..." + value[-4:]
+
+            click.secho(f"✓ Set {key} = {display_value}", fg="green")
+            click.echo(f"Config saved to: {UserConfig.get_config_file()}")
+
+        except ValueError as e:
+            click.secho(f"✗ {e}", fg="red")
+            sys.exit(1)
+
+        return
 
 
 if __name__ == "__main__":

@@ -27,19 +27,40 @@ Multi-modal document orchestration engine with dual-theme PDF generation, mathem
 
 ## Quick Start
 
+### Email Setup (2 Minutes)
+
+To use email features, configure your Resend API key:
+
+```bash
+# 1. Initialize user config
+barque user-config init
+
+# 2. Set your Resend API key (get free key from https://resend.com)
+barque user-config set email.resend_api_key re_your_api_key_here
+
+# 3. Set default sender email
+barque user-config set email.from noreply@your-domain.com
+
+# 4. Test email delivery
+barque send README.md --to your-email@example.com
+```
+
+**Note**: Free Resend accounts can only send to your verified email (the one you signed up with). To send to any recipient, verify a domain at [resend.com/domains](https://resend.com/domains).
+
+📖 **[EMAIL-SETUP.md](EMAIL-SETUP.md)** - Complete setup guide
+📖 **[CLI-CHEATSHEET.md](CLI-CHEATSHEET.md)** - Quick command reference
+
 ### Installation
 
-```bash
-pip install barque
-```
-
-Or install from source:
+**From Source** (Currently):
 
 ```bash
-git clone https://github.com/luxor/barque.git
-cd barque
+git clone https://github.com/manutej/luxor-barque.git
+cd luxor-barque
 pip install -e .
 ```
+
+**Note**: BARQUE is not yet published to PyPI. Coming soon!
 
 ### Basic Usage
 
@@ -171,40 +192,108 @@ barque config --reset     # Reset to defaults
 
 Generate PDF and send via email (convenience command).
 
+**Prerequisites**: Configure email settings with `barque user-config` ([setup guide](EMAIL-SETUP.md))
+
 ```bash
-barque send report.md --to user@example.com                       # Generate and send
+# Quick setup
+barque user-config set email.resend_api_key re_your_key
+barque user-config set email.from noreply@your-domain.com
+
+# Generate PDF and send
+barque send report.md --to user@example.com
+
+# With options
 barque send doc.md --to user@example.com --theme light            # Light theme only
 barque send report.md --to team@company.com --subject "Q4 Report" # Custom subject
+barque send file.md --to user@example.com --from custom@email.com # Override sender
 ```
 
 **Options:**
 - `--to` - Recipient email (required, can specify multiple times)
-- `--subject` - Email subject (default: auto-generated)
-- `--from` - Sender email address
-- `--theme` - PDF theme: `light`, `dark`, or `both`
-- `--provider` - Email provider: `resend` or `smtp`
+- `--subject` - Email subject (default: auto-generated from filename)
+- `--from` - Sender email address (default: from config or env)
+- `--theme` - PDF theme: `light`, `dark`, or `both` (default: `both`)
+- `--provider` - Email provider: `resend` or `smtp` (default: `resend`)
 - `--body` - Custom email body text
+- `--email-config` - Path to email config file (optional)
 
 ### `barque email <files...>`
 
 Send existing files via email.
 
+**Prerequisites**: Configure email settings with `barque user-config` ([setup guide](EMAIL-SETUP.md))
+
 ```bash
+# Quick setup
+barque user-config set email.resend_api_key re_your_key
+
+# Send single file
 barque email report.pdf --to user@example.com --subject "Report"
-barque email doc1.pdf doc2.pdf --to team@company.com              # Multiple files
-barque email file.pdf --to user@example.com --cc manager@company.com  # With CC
+
+# Multiple files
+barque email doc1.pdf doc2.pdf --to team@company.com --subject "Documents"
+
+# With CC/BCC
+barque email file.pdf \
+  --to user@example.com \
+  --cc manager@company.com \
+  --bcc archive@company.com \
+  --subject "Important File"
+```
+
+### `barque user-config`
+
+Manage user-level configuration (API keys, email settings).
+
+```bash
+# Initialize user config
+barque user-config init
+
+# Set Resend API key
+barque user-config set email.resend_api_key re_your_key
+
+# Set default sender email
+barque user-config set email.from noreply@your-domain.com
+
+# View all settings
+barque user-config show
+
+# Get specific value
+barque user-config get email.from
+
+# Show config file location
+barque user-config path
+```
+
+**Available Settings:**
+- `email.resend_api_key` - Resend API key
+- `email.from` - Default sender email
+- `email.signature` - Email signature
+- `smtp.host` - SMTP server (alternative to Resend)
+- `smtp.port` - SMTP port
+- `smtp.username` - SMTP username
+- `smtp.password` - SMTP password
+- `preferences.theme` - Default theme (light/dark/both)
+- `preferences.output` - Default output directory
 ```
 
 **Options:**
 - `--to` - Recipient email (required, can specify multiple times)
 - `--subject` - Email subject (required)
-- `--from` - Sender email address
+- `--from` - Sender email address (default: from config or env)
 - `--cc` - CC recipient (can specify multiple times)
 - `--bcc` - BCC recipient (can specify multiple times)
 - `--body` - Custom email body text
-- `--provider` - Email provider: `resend` or `smtp`
+- `--provider` - Email provider: `resend` or `smtp` (default: `resend`)
+- `--email-config` - Path to email config file (optional)
 
-**See [EMAIL-GUIDE.md](EMAIL-GUIDE.md) for complete email documentation.**
+---
+
+## Email Documentation
+
+📖 **[EMAIL-SETUP.md](EMAIL-SETUP.md)** - 5-minute setup guide (start here!)
+📖 **[EMAIL-GUIDE.md](EMAIL-GUIDE.md)** - Complete email feature documentation
+📖 **[CONFIGURATION-GUIDE.md](CONFIGURATION-GUIDE.md)** - Advanced configuration
 
 ---
 
