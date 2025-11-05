@@ -6,13 +6,8 @@ from pathlib import Path
 from typing import List, Optional, Dict, Any, Union
 from dataclasses import dataclass
 
-# Import configuration system
-from .email_config import (
-    EmailProvider,
-    EmailConfig as EmailConfigClass,
-    EmailConfigLoader,
-    EmailConfigData
-)
+from .user_config import UserConfig
+
 
 # Re-export for backward compatibility
 EmailProvider = EmailProvider
@@ -95,21 +90,32 @@ class EmailResult:
 class EmailSender:
     """Email delivery orchestrator using Charm Pop"""
 
-    def __init__(self, config: Optional[Union[EmailConfig, Path]] = None):
-        """
-        Initialize EmailSender
+    def __init__(self, config: Optional[EmailConfig] = None):
+        # Load user config from ~/.config/barque/config.yaml
+        user_config = UserConfig.load()
 
-        Args:
-            config: EmailConfig instance, path to config file, or None
-                   If None, will attempt to load from standard locations
-        """
-        # Handle different config types
-        if isinstance(config, Path):
-            self.config = EmailConfig.from_file(config)
-        elif config is None:
-            self.config = EmailConfig.from_file()
-        else:
-            self.config = config
+        # Start with provided config or create default
+        self.config = config or EmailConfig()
+
+        # Merge user config into email config (user config takes precedence if values not set)
+        if not self.config.from_email and user_config.default_from_email:
+            self.config.from_email = user_config.default_from_email
+
+        if not self.config.signature and user_config.default_email_signature:
+            self.config.signature = user_config.default_email_signature
+
+        if not self.config.resend_api_key and user_config.resend_api_key:
+            self.config.resend_api_key = user_config.resend_api_key
+
+        # SMTP settings from user config
+        if not self.config.smtp_host and user_config.smtp_host:
+            self.config.smtp_host = user_config.smtp_host
+        if not self.config.smtp_port and user_config.smtp_port:
+            self.config.smtp_port = user_config.smtp_port
+        if not self.config.smtp_username and user_config.smtp_username:
+            self.config.smtp_username = user_config.smtp_username
+        if not self.config.smtp_password and user_config.smtp_password:
+            self.config.smtp_password = user_config.smtp_password
 
         self._verify_pop_installed()
 
