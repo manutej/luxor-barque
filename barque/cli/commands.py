@@ -423,8 +423,13 @@ main.add_command(config_cmd, name='config')
     '--resend-api-key',
     help='Resend API key (or set RESEND_API_KEY env var)'
 )
+@click.option(
+    '--email-config',
+    type=click.Path(exists=True),
+    help='Email configuration file (default: .barque/email.yaml)'
+)
 def email(files, to, subject, from_email, body, cc, bcc, provider,
-          smtp_host, smtp_port, smtp_username, smtp_password, resend_api_key):
+          smtp_host, smtp_port, smtp_username, smtp_password, resend_api_key, email_config):
     """Send files via email using Charm Pop"""
 
     # Check if Pop is installed
@@ -451,15 +456,20 @@ def email(files, to, subject, from_email, body, cc, bcc, provider,
         click.echo(f"     - {file_path.name} ({file_path.stat().st_size / 1024:.1f} KB)")
 
     # Build email configuration
-    email_config = EmailConfig(
-        provider=EmailProvider.RESEND if provider == 'resend' else EmailProvider.SMTP,
-        from_email=from_email,
-        smtp_host=smtp_host,
-        smtp_port=smtp_port,
-        smtp_username=smtp_username,
-        smtp_password=smtp_password,
-        resend_api_key=resend_api_key
-    )
+    # Load from config file if provided, otherwise use CLI args
+    if email_config:
+        email_cfg = EmailConfig.from_file(Path(email_config))
+    else:
+        # CLI args take precedence
+        email_cfg = EmailConfig(
+            provider=EmailProvider.RESEND if provider == 'resend' else EmailProvider.SMTP,
+            from_email=from_email,
+            smtp_host=smtp_host,
+            smtp_port=smtp_port,
+            smtp_username=smtp_username,
+            smtp_password=smtp_password,
+            resend_api_key=resend_api_key
+        )
 
     # Create default body if not provided
     if body is None:
@@ -487,7 +497,7 @@ Please find attached the following files:
 
     # Send email
     try:
-        sender = EmailSender(email_config)
+        sender = EmailSender(email_cfg)
 
         with click.progressbar(
             length=1,
@@ -550,7 +560,12 @@ Please find attached the following files:
     '--body',
     help='Custom email body text'
 )
-def send(file, to, subject, from_email, theme, output, provider, body):
+@click.option(
+    '--email-config',
+    type=click.Path(exists=True),
+    help='Email configuration file (default: .barque/email.yaml)'
+)
+def send(file, to, subject, from_email, theme, output, provider, body, email_config):
     """Generate PDF and send via email (convenience command)"""
 
     input_file = Path(file)
@@ -602,16 +617,22 @@ def send(file, to, subject, from_email, theme, output, provider, body):
         subject = f"PDF Report: {result.metadata.get('title', input_file.stem)}"
 
     # Build email configuration
-    email_config = EmailConfig(
-        provider=EmailProvider.RESEND if provider == 'resend' else EmailProvider.SMTP,
-        from_email=from_email
-    )
+    if email_config:
+        email_cfg = EmailConfig.from_file(Path(email_config))
+    else:
+        # Load from default locations or use CLI args
+        email_cfg = EmailConfig.from_file()
+        # Override with CLI args if provided
+        if from_email:
+            email_cfg.from_email = from_email
+        if provider:
+            email_cfg.provider = EmailProvider.RESEND if provider == 'resend' else EmailProvider.SMTP
 
     # Send email
     click.echo(f"\n📧 Sending email to {', '.join(to)}...")
 
     try:
-        sender = EmailSender(email_config)
+        sender = EmailSender(email_cfg)
 
         email_result = sender.send_pdf_report(
             to=list(to),
