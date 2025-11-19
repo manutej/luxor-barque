@@ -11,7 +11,7 @@ from ..core.user_config import UserConfig
 
 
 @click.group()
-@click.version_option(version="2.0.0", prog_name="barque")
+@click.version_option(version="2.1.0", prog_name="barque")
 @click.pass_context
 def main(ctx):
     """
@@ -20,24 +20,55 @@ def main(ctx):
     Multi-modal document orchestration with dual-theme PDF generation and email delivery.
 
     \b
-    Setup (First Time):
-      barque user-config init                      # Create user config file
+    🚀 Quick Start (Streamlined Workflow):
+      barque user-config init                      # One-time setup
       barque user-config set email.resend_api_key re_abc123
+      barque user-config set email.from onboarding@resend.dev
+      barque user-config set email.to colleague@example.com
+
+      barque send doc.md                           # Now just one command!
+      # Or use the shell wrapper: barque-send doc.md
 
     \b
-    Examples:
+    📄 PDF Generation:
       barque init                                  # Initialize BARQUE project
       barque generate document.md                  # Generate PDF (both themes)
       barque generate doc.md --theme light         # Generate light theme only
       barque batch docs/ --workers 8               # Process directory with 8 workers
-      barque send doc.md --to user@example.com     # Generate PDF and email it
-      barque email file.pdf --to user@example.com  # Send existing file via email
-                           --subject "Report"
 
     \b
-    Configuration:
+    📧 Email Delivery (Simplified):
+      barque send doc.md                           # Uses default recipient from config
+      barque send doc.md --to user@example.com     # Override recipient
+      barque send doc.md --theme light             # Custom theme
+
+      # Send existing files
+      barque email file.pdf --to user@example.com --subject "Report"
+
+    \b
+    ⚙️  Configuration:
       barque user-config show                      # Show user settings
+      barque user-config set email.to <email>      # Set default recipient
       barque config --show                         # Show project settings
+
+    \b
+    🔗 Shell Wrapper (Recommended):
+      ./scripts/install-shell-wrapper.sh           # Install barque-send
+      barque-send doc.md                           # Shortest command!
+      bsend doc.md                                 # Even shorter alias!
+
+    \b
+    📚 Documentation:
+      QUICK-SEND-GUIDE.md                          # Quick reference
+      docs/SHELL-SCRIPT-GUIDE.md                   # Complete guide
+      docs/EMAIL-GUIDE.md                          # Email configuration
+
+    \b
+    💡 Pro Tips:
+      • Set default recipient once, send files instantly
+      • Use barque-send for daily workflow (90% fewer keystrokes)
+      • Both light and dark PDFs included by default
+      • Smart subject lines auto-generated from markdown titles
     """
     ctx.ensure_object(dict)
 
@@ -656,6 +687,7 @@ def user_config_cmd(action, key, value):
     Available Keys:
       email.resend_api_key      Resend API key for email delivery
       email.from                Default sender email address
+      email.to                  Default recipient email (for quick sends)
       email.signature           Default email signature
       smtp.host                 SMTP server hostname
       smtp.port                 SMTP server port
@@ -669,6 +701,7 @@ def user_config_cmd(action, key, value):
       barque user-config init
       barque user-config set email.resend_api_key re_abc123
       barque user-config set email.from user@example.com
+      barque user-config set email.to colleague@example.com
       barque user-config get email.from
       barque user-config show
       barque user-config path

@@ -14,6 +14,7 @@ class UserConfig:
     # Email settings
     resend_api_key: Optional[str] = None
     default_from_email: Optional[str] = None
+    default_to_email: Optional[str] = None  # Default recipient for quick sends
     default_email_signature: Optional[str] = None
 
     # SMTP settings (alternative to Resend)
@@ -68,6 +69,7 @@ class UserConfig:
             # Email
             resend_api_key=email.get("resend_api_key"),
             default_from_email=email.get("default_from_email"),
+            default_to_email=email.get("default_to_email"),  # New: default recipient
             default_email_signature=email.get("default_signature"),
             # SMTP
             smtp_host=smtp.get("host"),
@@ -92,6 +94,8 @@ class UserConfig:
             config["email"]["resend_api_key"] = self.resend_api_key
         if self.default_from_email:
             config["email"]["default_from_email"] = self.default_from_email
+        if self.default_to_email:
+            config["email"]["default_to_email"] = self.default_to_email
         if self.default_email_signature:
             config["email"]["default_signature"] = self.default_email_signature
 
@@ -129,6 +133,7 @@ class UserConfig:
         key_mapping = {
             "email.resend_api_key": "resend_api_key",
             "email.from": "default_from_email",
+            "email.to": "default_to_email",
             "email.signature": "default_email_signature",
             "smtp.host": "smtp_host",
             "smtp.port": "smtp_port",
@@ -156,6 +161,7 @@ class UserConfig:
         key_mapping = {
             "email.resend_api_key": "resend_api_key",
             "email.from": "default_from_email",
+            "email.to": "default_to_email",
             "email.signature": "default_email_signature",
             "smtp.host": "smtp_host",
             "smtp.port": "smtp_port",
@@ -185,6 +191,9 @@ email:
 
   # Default sender email address
   default_from_email: "your-email@example.com"
+
+  # Default recipient (for quick sends without specifying --to)
+  # default_to_email: "colleague@example.com"
 
   # Optional email signature
   # default_signature: "Sent with ❤️ by BARQUE"
