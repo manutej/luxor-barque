@@ -1,0 +1,24 @@
+{
+  "title": "BARQUE Email Setup Guide",
+  "name": "EMAIL-SETUP",
+  "file": "EMAIL-SETUP.md",
+  "file_size": 6868,
+  "line_count": 360,
+  "word_count": 930,
+  "section_count": 51,
+  "code_blocks": 24,
+  "links": 7,
+  "images": 0,
+  "has_math": true,
+  "modified": "2025-11-03T13:49:51.724239",
+  "created": "2025-11-03T13:49:51.729699",
+  "summary": "# BARQUE Email Setup Guide  Quick 5-minute setup for sending PDFs via email.  ---  ## Prerequisites  - Resend account (recommended) OR SMTP server credentials - Charm Pop CLI installed (automatic on f",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "pdf_files": {
+    "light": null,
+    "dark": "dark/EMAIL-SETUP-dark.pdf"
+  }
+}

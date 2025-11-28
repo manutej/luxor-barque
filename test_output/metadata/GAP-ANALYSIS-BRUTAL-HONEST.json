@@ -1,0 +1,24 @@
+{
+  "title": "BARQUE v2.1.0 - BRUTAL GAP ANALYSIS",
+  "name": "GAP-ANALYSIS-BRUTAL-HONEST",
+  "file": "GAP-ANALYSIS-BRUTAL-HONEST.md",
+  "file_size": 10853,
+  "line_count": 418,
+  "word_count": 1512,
+  "section_count": 49,
+  "code_blocks": 10,
+  "links": 0,
+  "images": 0,
+  "has_math": false,
+  "modified": "2025-11-18T00:52:01.101324",
+  "created": "2025-11-18T00:52:01.106489",
+  "summary": "# BARQUE v2.1.0 - BRUTAL GAP ANALYSIS  **Date**: November 17, 2025 **Analyst**: Spec-Driven Development Expert **Methodology**: Comprehensive architectural, specification, and production-readiness aud",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "pdf_files": {
+    "light": null,
+    "dark": "dark/GAP-ANALYSIS-BRUTAL-HONEST-dark.pdf"
+  }
+}

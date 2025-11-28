@@ -1,0 +1,24 @@
+{
+  "title": "BARQUE",
+  "name": "README",
+  "file": "README.md",
+  "file_size": 13936,
+  "line_count": 656,
+  "word_count": 1791,
+  "section_count": 83,
+  "code_blocks": 30,
+  "links": 18,
+  "images": 3,
+  "has_math": true,
+  "modified": "2025-11-04T19:43:31.697811",
+  "created": "2025-11-04T19:43:31.702529",
+  "summary": "# BARQUE  **Beautiful Automated Report and Query Universal Engine**  Multi-modal document orchestration engine with dual-theme PDF generation, mathematical formula support, and beautiful formatting.",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "pdf_files": {
+    "light": null,
+    "dark": "dark/README-dark.pdf"
+  }
+}

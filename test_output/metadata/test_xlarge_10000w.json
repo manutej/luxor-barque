@@ -1,0 +1,24 @@
+{
+  "title": "Performance Test Document - XLARGE",
+  "name": "test_xlarge_10000w",
+  "file": "/Users/manu/Documents/LUXOR/PROJECTS/BARQUE/tests/performance/test_files/test_xlarge_10000w.md",
+  "file_size": 66445,
+  "line_count": 110,
+  "word_count": 10359,
+  "section_count": 18,
+  "code_blocks": 5,
+  "links": 0,
+  "images": 0,
+  "has_math": false,
+  "modified": "2025-11-10T00:10:20.539016",
+  "created": "2025-11-10T00:10:20.539016",
+  "summary": "# Performance Test Document - XLARGE  **Word Count Target**: 10,000  ## Section 1  Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor Lorem ipsum dolor sit amet consectetur a",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "pdf_files": {
+    "light": null,
+    "dark": "dark/test_xlarge_10000w-dark.pdf"
+  }
+}

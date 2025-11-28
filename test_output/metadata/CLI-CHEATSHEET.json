@@ -1,0 +1,24 @@
+{
+  "title": "BARQUE CLI Cheat Sheet",
+  "name": "CLI-CHEATSHEET",
+  "file": "CLI-CHEATSHEET.md",
+  "file_size": 4677,
+  "line_count": 229,
+  "word_count": 635,
+  "section_count": 37,
+  "code_blocks": 18,
+  "links": 4,
+  "images": 0,
+  "has_math": true,
+  "modified": "2025-11-03T13:51:02.100744",
+  "created": "2025-11-03T13:51:02.107188",
+  "summary": "# BARQUE CLI Cheat Sheet  Quick reference for BARQUE commands.  ---  ## Setup (One-Time)  ```bash # Install BARQUE pip install barque  # Set up email (optional) export RESEND_API_KEY=\"re_your_key\"  #",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "pdf_files": {
+    "light": null,
+    "dark": "dark/CLI-CHEATSHEET-dark.pdf"
+  }
+}

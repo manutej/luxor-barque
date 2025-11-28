@@ -1,0 +1,24 @@
+{
+  "title": "BARQUE Quick Start Guide",
+  "name": "QUICK-START",
+  "file": "QUICK-START.md",
+  "file_size": 4379,
+  "line_count": 261,
+  "word_count": 592,
+  "section_count": 48,
+  "code_blocks": 19,
+  "links": 0,
+  "images": 0,
+  "has_math": true,
+  "modified": "2025-11-01T01:45:08.485245",
+  "created": "2025-11-01T01:45:08.492948",
+  "summary": "# BARQUE Quick Start Guide  **Version**: 2.0.0 **Status**: Production Ready ✅  ---  ## Installation  ```bash cd /Users/manu/Documents/LUXOR/PROJECTS/BARQUE source venv/bin/activate pip install -e . ``",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "pdf_files": {
+    "light": null,
+    "dark": "dark/QUICK-START-dark.pdf"
+  }
+}

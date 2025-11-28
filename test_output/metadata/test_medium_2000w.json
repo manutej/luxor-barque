@@ -1,0 +1,24 @@
+{
+  "title": "Performance Test Document - MEDIUM",
+  "name": "test_medium_2000w",
+  "file": "/Users/manu/Documents/LUXOR/PROJECTS/BARQUE/tests/performance/test_files/test_medium_2000w.md",
+  "file_size": 15597,
+  "line_count": 26,
+  "word_count": 2429,
+  "section_count": 5,
+  "code_blocks": 1,
+  "links": 0,
+  "images": 0,
+  "has_math": false,
+  "modified": "2025-11-10T00:10:15.071632",
+  "created": "2025-11-10T00:10:15.071632",
+  "summary": "# Performance Test Document - MEDIUM  **Word Count Target**: 2,000  ## Section 1  Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor Lorem ipsum dolor sit amet consectetur ad",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "pdf_files": {
+    "light": null,
+    "dark": "dark/test_medium_2000w-dark.pdf"
+  }
+}

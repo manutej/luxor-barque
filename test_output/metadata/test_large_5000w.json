@@ -1,0 +1,24 @@
+{
+  "title": "Performance Test Document - LARGE",
+  "name": "test_large_5000w",
+  "file": "tests/performance/test_files/test_large_5000w.md",
+  "file_size": 35165,
+  "line_count": 60,
+  "word_count": 5479,
+  "section_count": 10,
+  "code_blocks": 3,
+  "links": 0,
+  "images": 0,
+  "has_math": false,
+  "modified": "2025-11-10T03:10:17.523117",
+  "created": "2025-11-10T03:10:17.523117",
+  "summary": "# Performance Test Document - LARGE  **Word Count Target**: 5,000  ## Section 1  Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor Lorem ipsum dolor sit amet consectetur adi",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "pdf_files": {
+    "light": null,
+    "dark": "dark/test_large_5000w-dark.pdf"
+  }
+}
