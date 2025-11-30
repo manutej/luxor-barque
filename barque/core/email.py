@@ -3,22 +3,25 @@
 import subprocess
 import shutil
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from dataclasses import dataclass
-from enum import Enum
 
 from .user_config import UserConfig
 
 
-class EmailProvider(Enum):
-    """Email delivery provider"""
-    RESEND = "resend"
-    SMTP = "smtp"
+# Re-export for backward compatibility
+EmailProvider = EmailProvider
 
 
+# Legacy EmailConfig wrapper for backward compatibility
 @dataclass
 class EmailConfig:
-    """Email configuration"""
+    """
+    Email configuration (backward compatible wrapper)
+
+    This class maintains backward compatibility with the original API
+    while delegating to the new configuration system.
+    """
     provider: EmailProvider = EmailProvider.RESEND
     from_email: Optional[str] = None
     signature: Optional[str] = None
@@ -31,6 +34,32 @@ class EmailConfig:
 
     # Resend specific
     resend_api_key: Optional[str] = None
+
+    @classmethod
+    def from_file(cls, config_path: Optional[Path] = None) -> 'EmailConfig':
+        """
+        Load configuration from file with environment variable overrides
+
+        Args:
+            config_path: Optional path to config file
+
+        Returns:
+            EmailConfig instance
+        """
+        # Use new config loader
+        config_data = EmailConfigLoader.load(config_path)
+
+        # Convert to legacy format
+        return cls(
+            provider=config_data.provider,
+            from_email=config_data.defaults.from_email,
+            signature=config_data.defaults.signature,
+            smtp_host=config_data.smtp.host,
+            smtp_port=config_data.smtp.port,
+            smtp_username=config_data.smtp.username,
+            smtp_password=config_data.smtp.password,
+            resend_api_key=config_data.resend.api_key
+        )
 
 
 @dataclass
